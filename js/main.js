@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import * as THREE from './vendor/three.module.js';
 import { Ground } from './physics/ground.js';
 import { Vehicle } from './physics/vehicle.js';
 import { Track } from './world/track.js';
@@ -121,12 +121,26 @@ document.getElementById('btn-manual').addEventListener('click', () => {
 });
 
 let started = false;
-const overlay = document.getElementById('overlay');
-document.getElementById('btn-start').addEventListener('click', () => {
-  overlay.classList.add('hidden');
-  audio.start();
+function startGame() {
+  if (started) return;
   started = true;
-});
+  overlay.classList.add('hidden');
+  try { audio.start(); } catch (err) { console.warn('Audio indisponible', err); }
+}
+const overlay = document.getElementById('overlay');
+{
+  // Délégué : tout clic/tap pendant l'écran de démarrage lance le jeu
+  const startFromEvent = (e) => {
+    if (started) return;
+    e.preventDefault();
+    startGame();
+  };
+  document.addEventListener('pointerdown', startFromEvent, true);
+  document.addEventListener('keydown', (e) => {
+    if (!started && (e.code === 'Enter' || e.code === 'Space')) startFromEvent(e);
+  }, true);
+  document.getElementById('btn-start').addEventListener('click', startGame);
+}
 
 addEventListener('keydown', (e) => {
   if (e.code === 'KeyC') console.info('Caméra :', cameraRig.cycle());
@@ -173,4 +187,5 @@ function frame() {
 
   renderer.render(scene, camera);
 }
+window.__apexReady = true;
 frame();

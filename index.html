@@ -5,13 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>Apex Drive — Simulateur de conduite</title>
   <link rel="stylesheet" href="css/style.css" />
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "./vendor/three.module.js"
-      }
-    }
-  </script>
   <script>
     (function () {
       function show(msg) {
@@ -26,6 +19,14 @@
       window.addEventListener('unhandledrejection', function (e) {
         show('ERREUR PROMESSE : ' + e.reason);
       });
+      setTimeout(function () {
+        if (!window.__apexReady) {
+          var ov = document.getElementById('overlay');
+          if (ov && !ov.classList.contains('hidden')) {
+            show('Chargement bloqué : votre navigateur est peut-être trop ancien ou JavaScript est désactivé. Essayez Chrome/Firefox/Edge récents.');
+          }
+        }
+      }, 4000);
     })();
   </script>
 </head>
@@ -83,7 +84,7 @@
       <h1>APEX DRIVE</h1>
       <p>Simulateur de conduite — physique véhicule temps réel<br/>
          rigid body · suspensions · pneus Pacejka · boîte 6 rapports</p>
-      <button id="btn-start">DÉMARRER</button>
+      <button id="btn-start" type="button">DÉMARRER</button>
       <p class="hint">Le son démarre à la première interaction (politique navigateur).</p>
     </div>
   </div>
