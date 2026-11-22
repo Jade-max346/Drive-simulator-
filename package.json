@@ -1,0 +1,15 @@
+{
+  "name": "driving-simulator",
+  "version": "1.0.0",
+  "description": "Simulateur de conduite 3D temps réel — physique véhicule complète (rigid body, suspensions, pneus Pacejka, boîte 6 rapports), rendu Three.js, audio moteur WebAudio.",
+  "type": "module",
+  "scripts": {
+    "start": "python3 -m http.server 8000 --bind 127.0.0.1",
+    "start:node": "npx --yes serve -l 3000 .",
+    "test": "node test/simtest.mjs"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "three": "^0.160.1"
+  }
+}

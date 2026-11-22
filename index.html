@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Apex Drive — Simulateur de conduite</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <canvas id="scene"></canvas>
+
+  <!-- HUD -->
+  <div id="hud">
+    <div id="lap-panel">
+      <div class="lap-row"><span>TOUR</span><span id="lap-num">—</span></div>
+      <div class="lap-row big"><span id="lap-current">0:00.00</span></div>
+      <div class="lap-row"><span>DERNIER</span><span id="lap-last">—</span></div>
+      <div class="lap-row"><span>MEILLEUR</span><span id="lap-best">—</span></div>
+    </div>
+
+    <div id="dash">
+      <canvas id="tach" width="260" height="150"></canvas>
+      <div id="speed-block">
+        <div id="speed-val">0</div>
+        <div id="speed-unit">km/h</div>
+      </div>
+      <div id="gear-block"><span id="gear-val">N</span></div>
+      <canvas id="gforce" width="110" height="110"></canvas>
+    </div>
+
+    <canvas id="minimap" width="220" height="220"></canvas>
+
+    <div id="transmission-panel">
+      <button id="btn-auto" class="toggle active">AUTO</button>
+      <button id="btn-manual" class="toggle">MANUEL</button>
+    </div>
+
+    <div id="controls-hint">
+      <b>Z/W/↑</b> accélérer · <b>S/↓</b> freiner · <b>Q/A/←/→</b> diriger ·
+      <b>ESPACE</b> frein à main · <b>E</b> monter · <b>X</b> descendre ·
+      <b>M</b> boîte auto/manuelle · <b>C</b> caméra · <b>R</b> réinitialiser
+    </div>
+
+    <!-- Contrôles tactiles (mobile) -->
+    <div id="touch" class="hidden">
+      <div class="touch-side left">
+        <button data-touch="left" class="tbtn">◀</button>
+        <button data-touch="right" class="tbtn">▶</button>
+      </div>
+      <div class="touch-side right">
+        <button data-touch="brake" class="tbtn">BRK</button>
+        <button data-touch="throttle" class="tbtn">GAZ</button>
+        <button data-touch="handbrake" class="tbtn small">MAIN</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="overlay">
+    <div id="overlay-card">
+      <h1>APEX DRIVE</h1>
+      <p>Simulateur de conduite — physique véhicule temps réel<br/>
+         rigid body · suspensions · pneus Pacejka · boîte 6 rapports</p>
+      <button id="btn-start">DÉMARRER</button>
+      <p class="hint">Le son démarre à la première interaction (politique navigateur).</p>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
