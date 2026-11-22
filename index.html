@@ -8,9 +8,25 @@
   <script type="importmap">
     {
       "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js"
+        "three": "./vendor/three.module.js"
       }
     }
+  </script>
+  <script>
+    (function () {
+      function show(msg) {
+        var el = document.createElement('div');
+        el.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#a01010;color:#fff;padding:10px 16px;font:13px/1.5 monospace;white-space:pre-wrap';
+        el.textContent = msg;
+        document.body.appendChild(el);
+      }
+      window.addEventListener('error', function (e) {
+        show('ERREUR : ' + e.message + '\n' + (e.filename || '') + ':' + (e.lineno || ''));
+      });
+      window.addEventListener('unhandledrejection', function (e) {
+        show('ERREUR PROMESSE : ' + e.reason);
+      });
+    })();
   </script>
 </head>
 <body>

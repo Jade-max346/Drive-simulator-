@@ -8,8 +8,7 @@ HUD complet, audio moteur WebAudio et effets (gommes, fumée).
 
 ## Lancer localement
 
-Une connexion internet est requise au premier chargement (Three.js depuis un CDN
-via import map). Aucune étape de build.
+Aucune connexion requise : Three.js est embarqué dans `vendor/`. Aucune étape de build.
 
 ```bash
 cd driving-sim

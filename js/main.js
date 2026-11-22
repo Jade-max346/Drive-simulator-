@@ -12,7 +12,14 @@ import { EngineAudio } from './audio/engineAudio.js';
 import { InputManager } from './input.js';
 
 const canvas = document.getElementById('scene');
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+let renderer;
+try {
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+} catch (err) {
+  document.getElementById('overlay-card').innerHTML =
+    '<h1>WEBGL INDISPONIBLE</h1><p>Votre navigateur ne peut pas créer le contexte 3D.<br/>Mettez-le à jour ou activez l\'accélération matérielle.</p>';
+  throw err;
+}
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.setSize(innerWidth, innerHeight);
 renderer.shadowMap.enabled = true;
