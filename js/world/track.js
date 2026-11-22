@@ -78,9 +78,15 @@ export class Track {
         if (!list) continue;
         for (const i of list) {
           const s = this.samples[i].p;
-          const d = Math.hypot(x - s.p.x, z - s.p.z);
+          const d = Math.hypot(x - s.x, z - s.z);
           if (d < best) best = d;
         }
+      }
+    }
+    if (!isFinite(best)) {
+      for (const s of this.samples) {
+        const d = Math.hypot(x - s.p.x, z - s.p.z);
+        if (d < best) best = d;
       }
     }
     return best;
