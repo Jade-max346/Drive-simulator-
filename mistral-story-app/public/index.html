@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Générateur d'histoires IA</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: #0f1220;
+      color: #e8e9f3;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+    .app { width: 100%; max-width: 760px; display: flex; flex-direction: column; gap: 16px; }
+    header { text-align: center; }
+    header h1 { font-size: 1.6rem; }
+    header p { color: #9aa0c3; margin-top: 6px; font-size: 0.95rem; }
+    .card {
+      background: #1a1e33;
+      border: 1px solid #2c3154;
+      border-radius: 14px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    textarea, .presets button {
+      background: #12162b;
+      border: 1px solid #2c3154;
+      border-radius: 10px;
+      color: #e8e9f3;
+      font: inherit;
+    }
+    textarea { padding: 14px; min-height: 110px; resize: vertical; }
+    textarea:focus { outline: 2px solid #5b6cff; border-color: transparent; }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .presets button { padding: 8px 12px; font-size: 0.85rem; cursor: pointer; color: #aeb4d8; }
+    .presets button:hover { border-color: #5b6cff; color: #fff; }
+    #submit {
+      align-self: flex-end;
+      background: #5b6cff;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 22px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    #submit:disabled { opacity: 0.5; cursor: not-allowed; }
+    #output {
+      background: #12162b;
+      border: 1px solid #2c3154;
+      border-radius: 10px;
+      padding: 18px;
+      white-space: pre-wrap;
+      line-height: 1.6;
+      min-height: 160px;
+      font-size: 0.98rem;
+    }
+    #output:empty::before { content: "Votre histoire apparaîtra ici."; color: #6a7096; }
+    .error { color: #ff8080; }
+    .hint { color: #6a7096; font-size: 0.8rem; text-align: center; }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <h1>📚 Générateur d'histoires IA</h1>
+      <p>Donnez un prompt, obtenez une histoire — propulsé par <strong>mistral-small-latest</strong></p>
+    </header>
+
+    <section class="card">
+      <textarea id="prompt" placeholder="Ex. : Une détective dans une ville où il ne cesse de pleuvoir, genre noir, chute surprenante…"></textarea>
+      <div class="row presets">
+        <button data-p="Un conte pour enfants avec un dragon qui a peur des hauteurs.">🐉 Conte enfant</button>
+        <button data-p="Une histoire de science-fiction : le premier contact sur Mars, ton réaliste.">🚀 Sci-fi</button>
+        <button data-p="Un polar noir : un vol de tableau dans un musée de Lyon, narrateur fiable en apparence.">🕵️ Polar</button>
+        <button data-p="Une fable poétique sur un phare qui devient amoureux de la mer.">🌊 Fable</button>
+      </div>
+      <button id="submit">Générer l'histoire ✨</button>
+    </section>
+
+    <section class="card">
+      <div id="output"></div>
+    </section>
+
+    <p class="hint">L'appel à l'API Mistral se fait côté serveur — votre clé API n'est jamais exposée au navigateur.</p>
+  </main>
+
+  <script>
+    const promptEl = document.getElementById("prompt");
+    const submitEl = document.getElementById("submit");
+    const outputEl = document.getElementById("output");
+
+    document.querySelectorAll(".presets button").forEach((btn) => {
+      btn.addEventListener("click", () => { promptEl.value = btn.dataset.p; promptEl.focus(); });
+    });
+
+    submitEl.addEventListener("click", generate);
+    promptEl.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) generate();
+    });
+
+    async function generate() {
+      const prompt = promptEl.value.trim();
+      if (!prompt) { showError("Entrez d'abord un prompt."); return; }
+
+      submitEl.disabled = true;
+      outputEl.classList.remove("error");
+      outputEl.textContent = "Génération en cours…";
+
+      try {
+        const res = await fetch("/api/story", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Erreur inconnue");
+        outputEl.textContent = data.story;
+      } catch (err) {
+        showError(err.message);
+      } finally {
+        submitEl.disabled = false;
+      }
+    }
+
+    function showError(msg) {
+      outputEl.classList.add("error");
+      outputEl.textContent = "⚠️ " + msg;
+    }
+  </script>
+</body>
+</html>
